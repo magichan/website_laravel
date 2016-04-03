@@ -19,3 +19,7 @@ Route::get('/', function () {
 Route::auth();
 
 Route::get('/home', 'HomeController@index');
+
+Route::group(['prefix'=>'test','namespace'=>'Test','middle'=>['web']],function(){
+     Route::get('/oldtonew','OldDatabaseToNewDatabase@index');
+});
