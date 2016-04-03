@@ -11,15 +11,25 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+/* Route::get('/', function () { */
+/*     return view('welcome'); */
+/* }); */
+
+
+Route::group(['middleware'=>'web'],function(){
+  // 对外开放的网页  index about contact
+  Route::get('/home','StaticHtml@index');
+  Route::get('/','StaticHtml@index');
+  Route::get('/index','StaticHtml@index');
+  Route::get('/about','StaticHtml@about');
+  Route::get('/contact','StaticHtml@contact');
 });
-
-
 Route::auth();
 
 Route::get('/home', 'HomeController@index');
 
-Route::group(['prefix'=>'test','namespace'=>'Test','middle'=>['web']],function(){
-     Route::get('/oldtonew','OldDatabaseToNewDatabase@index');
+
+Route::group(['prefix'=>'test','namespace'=>'Test','middleware'=>['web']],function(){
+     /* Route::get('/oldtonew','OldDatabaseToNewDatabase@index'); */
+        Route::get('/index','ReturnHtmlFile@index');
 });
