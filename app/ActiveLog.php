@@ -17,5 +17,9 @@ class ActiveLog extends Model
     $app_key = env('APP_KEY','Hello world');
     return hash_hmac('sha256',Str::random(40),$app_key);
   }
+  public function user()
+  {
+    return $this->belongsTo('App\User');
+  }
 
 }

@@ -27,6 +27,7 @@ Route::group(['middleware'=>'web'],function(){
 
 Route::group(['prefix'=>'user','namespace'=>'User','middleware'=>['web','auth']],function(){
   Route::get('/active','ActiveController@Active'); //请求激活
+  Route::get('/init/{step?}','UserInfoController@init');
 
 });
 Route::get('user/active/{token?}','User\ActiveController@ActiveUser'); //通过 Url 激活
