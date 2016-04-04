@@ -24,9 +24,15 @@ Route::group(['middleware'=>'web'],function(){
   Route::get('/about','StaticHtml@about');
   Route::get('/contact','StaticHtml@contact');
 });
+
+Route::group(['prefix'=>'user','namespace'=>'User','middleware'=>['web','auth']],function(){
+  Route::get('/active','ActiveController@Active'); //请求激活
+
+});
+Route::get('user/active/{token?}','User\ActiveController@ActiveUser'); //通过 Url 激活
+
 Route::auth();
 
-Route::get('/home', 'HomeController@index');
 
 
 Route::group(['prefix'=>'test','namespace'=>'Test','middleware'=>['web']],function(){
