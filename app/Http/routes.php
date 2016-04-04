@@ -38,4 +38,5 @@ Route::auth();
 Route::group(['prefix'=>'test','namespace'=>'Test','middleware'=>['web']],function(){
      /* Route::get('/oldtonew','OldDatabaseToNewDatabase@index'); */
         Route::get('/index','ReturnHtmlFile@index');
+        Route::get('/email','TestEmail@index');
 });
