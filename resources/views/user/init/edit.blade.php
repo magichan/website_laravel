@@ -1,5 +1,4 @@
 
-
 @extends('layouts.app')
 @section('content')
 <div class="container">
@@ -8,26 +7,14 @@
       <div class="panel panel-default">
         <div class="panel-heading">个人信息</div>
         <div class="panel-body">
-          <form class="form-horizontal" role="form" method="POST" action="{{ url('/user/init/one') }}">
+          <form class="form-horizontal" role="form" method="POST" action="{{ url('/user/info') }}">
             {!! csrf_field() !!}
 
-
-            <div class="form-group{{ $errors->has('real_name') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">您的姓名</label>
-
-              <div class="col-md-6">
-                <input type="text" class="form-control" name="real_name" value="{{ $user->real_name }}">
-
-                @if ($errors->has('real_name'))
-                <span class="help-block">
-                  <strong>{{ $errors->first('real_name') }}</strong>
-                </span>
-                @endif
-              </div>
-            </div>
-
+            @if($user->active==false)
+            尽快激活
+            @endif
             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">用户名</label>
+              <label class="col-md-4 control-label">Name</label>
 
               <div class="col-md-6">
                 <input type="text" class="form-control" name="name" value="{{ $user->name }}">
@@ -39,8 +26,6 @@
                 @endif
               </div>
             </div>
-
-
 
 
             <div class="form-group{{ $errors->has('address') ? ' has-error' : '' }}">
@@ -58,10 +43,10 @@
             </div>
 
             <div class="form-group{{ $errors->has('admission_year') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">入学年份[搞成选择框]</label>
+              <label class="col-md-4 control-label">入学年份</label>
 
               <div class="col-md-6">
-                <input type="text" class="form-control" name="addmission_year" value="{{$user->admission_year}}">
+                <input type="text" class="form-control" name="admission_year" value="{{$user->admission_year}}">
 
                 @if ($errors->has('admission_year'))
                 <span class="help-block">
@@ -74,11 +59,11 @@
             <div>
               <label class="checkbox-inline">
                 <input type="radio" name="sex" 
-                                    value="female" {{$user->gender=='female'?'checked':''}}> 女
+                                    value="female" {{$user->sex=='female'?'checked':''}}> 女
               </label>
               <label class="checkbox-inline">
                 <input type="radio" name="sex"  
-                                    value="male" {{$user->gender=='male'?'checked':''}}> 男 
+                                    value="male" {{$user->sex=='male'?'checked':''}}> 男 
               </label>
             </div>
 
@@ -110,54 +95,12 @@
               </div>
             </div>
 
-            <div class="form-group{{ $errors->has('group') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">小组[多选] </label>
-
-              <div class="col-md-6">
-                <input type="text" class="form-control" name="group" value="{{$user->group}}" >
-
-                @if ($errors->has('group'))
-                <span class="help-block">
-                  <strong>{{ $errors->first('group') }}</strong>
-                </span>
-                @endif
-              </div>
-            </div>
-
-            <div class="form-group{{ $errors->has('self_introduce') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">个人介绍</label>
-
-              <div class="col-md-6">
-                <textarea  class="form-control"  rows=5 name="self_introduce" >
-                  {{$user->self_introduce}}
-                </textarea>
-
-                @if ($errors->has('self_introduce'))
-                <span class="help-block">
-                  <strong>{{ $errors->first('self_introduce') }}</strong>
-                </span>
-                @endif
-              </div>
-            </div>
 
 
-            <div class="form-group{{ $errors->has('student_id') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">学号{选择 未毕业出现 }</label>
-
-              <div class="col-md-6">
-                <input type="text" class="form-control" name="student_id" value="{{$user->student_id}} " >
-
-                @if ($errors->has('student_id'))
-                <span class="help-block">
-                  <strong>{{ $errors->first('student_id') }}</strong>
-                </span>
-                @endif
-              </div>
-            </div>
 
 
             <div class="form-group{{ $errors->has('class') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">班级{选择 未毕业出现 }</label>
+              <label class="col-md-4 control-label">班级</label>
 
               <div class="col-md-6">
                 <input type="text" class="form-control" name="class" value="{{$user->class}} " >
@@ -170,8 +113,23 @@
               </div>
             </div>
 
+            <div class="form-group{{ $errors->has('group') ? ' has-error' : '' }}">
+              <label class="col-md-4 control-label">小组 </label>
+
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="group" value="{{$user->group}}" >
+
+                @if ($errors->has('group'))
+                <span class="help-block">
+                  <strong>{{ $errors->first('group') }}</strong>
+                </span>
+                @endif
+              </div>
+            </div>
+
+
             <div class="form-group{{ $errors->has('company ') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">公司{选择 已毕业 出现}</label>
+              <label class="col-md-4 control-label">公司</label>
 
               <div class="col-md-6">
                 <input type="text" class="form-control" name="company" value="{{$user->company}} " >
@@ -185,7 +143,7 @@
             </div>
 
             <div class="form-group{{ $errors->has('position') ? ' has-error' : '' }}">
-              <label class="col-md-4 control-label">职位{选择已毕业出现}</label>
+              <label class="col-md-4 control-label">职位</label>
 
               <div class="col-md-6">
                 <input type="text" class="form-control" name="position" value="{{$user->position}}" >
@@ -196,7 +154,26 @@
                 </span>
                 @endif
               </div>
-
+            </div><label for="name"> 选择私有信息，这些信息不会被协会成员查询到</label>
+            <div>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="address_authority"  value="0" {{ $user->address_authority==false?'checked':'' }}> 家庭住址
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="tel_authority" value="0" {{ $user->tel_authority==false?'checked':''}}> 电话
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="class_authority" value="0" {{ $user->class_authority==false?'checked':''}}> 班级 
+              </label>
+              @if($user->status=='graduate')
+              <label class="checkbox-inline">
+                <input type="checkbox" name="company_authority" value="0" {{ $user->company_authority==false?'checked':''}}> 公司 
+              </label>
+              <label class="checkbox-inline">
+                <input type="checkbox" name="position_authority" value="0" {{ $user->position_authority==false?'checked':''}}> 职位
+              </label>
+              @endif
+            </div>
 
 
 
@@ -207,7 +184,6 @@
                 </button>
               </div>
             </div>
-
           </form>
         </div>
       </div>

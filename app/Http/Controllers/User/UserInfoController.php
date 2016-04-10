@@ -31,8 +31,45 @@ class UserInfoController extends Controller
       switch($step)
       {
       case 'one':
-        return view('test.test')->withVar($user);
+        return view('user.init.one')->withuser($user);
         break;
+      case 'two':
+        return view('test.test')->withvar($user);
+        
+        break;
+      case 'three':
+        return view('test.test')->withvar($user);
+        break;
+      case 'four':
+        return view('test.test')->withvar($user);
+        break;
+      default:
+        return "log 内部错误";
+      }
+    }else{
+
+     return  redirect('user/init/'.$this->logtourl($log->step)); // 服从 数据库记录，将页面重定向。
+    }
+
+  } 
+
+  public function  getInit(Request $request ,$step = null )
+  {// 获取 init 过程中的数据输入 
+
+   switch($step)
+      {
+      case 'one':
+       $this->getOneInit($request,$step);
+
+       $this->validate($request,[
+      'real_name'=>'required',
+      'name'=>'required',
+      /* 'gender'=>'required|in:famale,male', */
+      'tel'=>'size:11',
+      'addmission_year'=>'required',
+      'status'=>'required|in:student,graduate'
+       ]);
+    return view('test.test')->withVar($request->all());
       case 'two':
         return view('test.test')->withVar($user);
         
@@ -46,12 +83,13 @@ class UserInfoController extends Controller
       default:
         return "log 内部错误";
       }
-    }else{
 
-     return  redirect('user/init/'.$this->logtourl($log->step)); // 服从 数据库记录，将页面重定向。
-    }
+  }
+ 
+  private function getOneInit($request)
+  {
+  }
 
-  } 
 
   private function checkStep($step,$log)
   {
