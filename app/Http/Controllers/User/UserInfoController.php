@@ -31,23 +31,24 @@ class UserInfoController extends Controller
       switch($step)
       {
       case 'one':
-        return view('')->withUser($user);
+        return view('test.test')->withVar($user);
         break;
       case 'two':
-        return view('')->withUser($user);
+        return view('test.test')->withVar($user);
         
         break;
       case 'three':
-        return view('')->withUser($user);
+        return view('test.test')->withVar($user);
         break;
       case 'four':
-        return view('')->withUser($user);
+        return view('test.test')->withVar($user);
         break;
       default:
         return "log 内部错误";
       }
     }else{
-      redirect('user/init/'.$this->logtourl($log->step)); // 服从 数据库记录，将页面重定向。
+
+     return  redirect('user/init/'.$this->logtourl($log->step)); // 服从 数据库记录，将页面重定向。
     }
 
   } 
