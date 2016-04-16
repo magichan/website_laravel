@@ -15,6 +15,9 @@
 /*     return view('welcome'); */
 /* }); */
 
+Route::get('error',function(){
+    return view('errors.cry');
+});
 
 Route::group(['middleware'=>'web'],function(){
   // 对外开放的网页  index about contact
