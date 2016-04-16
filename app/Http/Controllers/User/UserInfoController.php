@@ -13,6 +13,12 @@ use App\Http\Controllers\Controller;
 
 class UserInfoController extends Controller
 {
+  private $optional_choices = ['position','gender','company','tel','address']; 
+  /* 为信息初始化的步骤二 : 选择不被一般成员查询的私人信息 作的安全防备
+   * 只有在该数组的中的选择才会被通过，否则就会报错
+   * */
+
+
   public function init(Request $request, $step = null)
   {
     if(is_null($step))
@@ -39,7 +45,7 @@ class UserInfoController extends Controller
         return view('user.init.two')->withUser($user);
         break;
       case 'three':
-        return view('test.test')->withvar($user);
+        return view('user.init.three')->withvar($user);
         break;
       case 'four':
         return view('test.test')->withvar($user);
@@ -56,11 +62,12 @@ class UserInfoController extends Controller
 
   public function  getInit(Request $request ,$step = null )
   {// 获取 init 过程中的数据输入 
-    $request->merge(array_map('trim',$request->all()));
 
    switch($step)
       {
       case 'one':
+       
+       $request->merge(array_map('trim',$request->all())); // 去掉输入的左右空白符
 
        $this->validate($request,[
       'real_name'=>'required',
@@ -74,12 +81,22 @@ class UserInfoController extends Controller
       return   $this->getOneInit($request);
 
       case 'two':
-        return view('test.test')->withVar($user);
+
+        if(!$this->checkInthePrivateChoice($request->input('private_choice')) ) 
+        { // 检查输入是否在 private_choice 之中
+          return redirect('error');
+        }
+
+        return $this->getTwoInit($request);
         
         break;
       case 'three':
-        return view('test.test')->withVar($user);
-        break;
+        $user = Auth::user();
+        $infoInitLog = $user->InfoInitLog;
+        $infoInitLog->step = 4;
+        $infoInitLog->save();
+
+        return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
       case 'four':
         return view('test.test')->withVar($user);
         break;
@@ -105,6 +122,30 @@ class UserInfoController extends Controller
   
 
     return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
+  }
+
+  private function getTwoInit($request)
+  {
+        $user = Auth::user();
+        $this->clearUserPrivateChoice($user);
+        // 将当前用户的 私有信息 的设置 设置成全部可访问状态
+
+        if(empty($request->input('private_choice')))
+        { // 未被定义，说明所有的都是可以看的
+
+        }else{
+          foreach($request->input('private_choice') as $choice )
+          {
+            $choice = $choice."_authority"; // 利用变量命名规范: 描述访问权限的变量名直接在变量名后面 + _authority 
+              $user->update([$choice=>0]) ;
+          }
+        }
+
+        $infoInitLog = $user->InfoInitLog;
+        $infoInitLog->step = 3; 
+        $infoInitLog->save(); //切换到下一步骤
+ 
+        return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
   }
 
 
@@ -133,6 +174,37 @@ class UserInfoController extends Controller
       case 4: return "four";
       default:return "error";
     }
-
   }
+
+  private function checkInthePrivateChoice($choices)
+  {
+
+     if(is_null($choices))
+       return  true; // 没有传参数 是 成功 的
+
+    // 检查所有的选择是否符合条件, 成功返回 true 失败返回 false 
+    foreach($choices as $choice )
+    {
+      if(in_array($choice,$this->optional_choices))
+      {
+        continue;
+      }
+      else{
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private function clearUserPrivateChoice($user)
+  {
+    // 因为 checkbox 的性质，只发送没有被选择的，需要先行将 记录 归为初始状态
+
+    foreach($this->optional_choices as $choice )
+    {
+        $choice = $choice.'_authority';
+        $user->update([$choice=>1]); 
+    }
+  }
+
 }
