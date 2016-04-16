@@ -61,7 +61,7 @@
               <label class="col-md-4 control-label">入学年份[搞成选择框]</label>
 
               <div class="col-md-6">
-                <input type="text" class="form-control" name="addmission_year" value="{{$user->admission_year}}">
+                <input type="text" class="form-control" name="admission_year" value="{{$user->admission_year}}">
 
                 @if ($errors->has('admission_year'))
                 <span class="help-block">
@@ -70,18 +70,28 @@
                 @endif
               </div>
             </div>
-            <label >性别</label>
-            <div>
-              <label class="checkbox-inline">
-                <input type="radio" name="sex" 
-                                    value="female" {{$user->gender=='female'?'checked':''}}> 女
-              </label>
-              <label class="checkbox-inline">
-                <input type="radio" name="sex"  
-                                    value="male" {{$user->gender=='male'?'checked':''}}> 男 
-              </label>
+
+            <div class="form-group{{ $errors->has('gender') ? ' has-error' : '' }}">
+              <label >性别</label>
+              <div>
+                <label class="checkbox-inline">
+                  <input type="radio" name="gender" 
+                                      value="female" {{$user->gender=='female'?'checked':''}}> 女
+                </label>
+                <label class="checkbox-inline">
+                  <input type="radio" name="gender"  
+                                      value="male" {{$user->gender=='male'?'checked':''}}> 男 
+                </label>
+              </div>
+
+              @if ($errors->has('gender'))
+              <span class="help-block">
+                <strong>{{ $errors->first('gender') }}</strong>
+              </span>
+              @endif
             </div>
 
+            <div class="form-group{{ $errors->has('status') ? ' has-error' : '' }}">
             <label >是否毕业</label>
             <div>
               <label class="checkbox-inline">
@@ -94,7 +104,13 @@
               </label>
 
             </div>
+              @if ($errors->has('status'))
+              <span class="help-block">
+                <strong>{{ $errors->first('status') }}</strong>
+              </span>
+              @endif
 
+            </div>
 
             <div class="form-group{{ $errors->has('tel') ? ' has-error' : '' }}">
               <label class="col-md-4 control-label">电话 </label>

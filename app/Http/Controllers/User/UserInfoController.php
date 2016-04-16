@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use Auth;
+use Input;
 use App\User;
 use App\InfoInitLog;
 use Illuminate\Http\Request;
@@ -34,8 +35,8 @@ class UserInfoController extends Controller
         return view('user.init.one')->withuser($user);
         break;
       case 'two':
-        return view('test.test')->withvar($user);
         
+        return view('user.init.two')->withUser($user);
         break;
       case 'three':
         return view('test.test')->withvar($user);
@@ -55,21 +56,23 @@ class UserInfoController extends Controller
 
   public function  getInit(Request $request ,$step = null )
   {// 获取 init 过程中的数据输入 
+    $request->merge(array_map('trim',$request->all()));
 
    switch($step)
       {
       case 'one':
-       $this->getOneInit($request,$step);
 
        $this->validate($request,[
       'real_name'=>'required',
       'name'=>'required',
-      /* 'gender'=>'required|in:famale,male', */
+      'gender'=>'required|in:female,male',
       'tel'=>'size:11',
-      'addmission_year'=>'required',
+      'admission_year'=>'required',
       'status'=>'required|in:student,graduate'
-       ]);
-    return view('test.test')->withVar($request->all());
+       ]); // 检验输入
+
+      return   $this->getOneInit($request);
+
       case 'two':
         return view('test.test')->withVar($user);
         
@@ -88,6 +91,20 @@ class UserInfoController extends Controller
  
   private function getOneInit($request)
   {
+    $user = Auth::user();
+
+
+    $new_data = $request->all();
+    array_splice($new_data,0,1); // 删除 laravel 框架 自带的 token 值 ，注意这里默认 token 值 放在数组的第一位 
+
+    $user->update($new_data);//  利用数组赋值，速度快但不太安全。
+
+    $infoInitLog = $user->InfoInitLog;
+    $infoInitLog->step = 2;
+    $infoInitLog->save(); // 改变信息初始化过程的状态标示 
+  
+
+    return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
   }
 
 

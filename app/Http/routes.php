@@ -25,7 +25,7 @@ Route::group(['middleware'=>'web'],function(){
   Route::get('/contact','StaticHtml@contact');
 });
 
-Route::group(['prefix'=>'user','namespace'=>'User','middleware'=>['web','auth']],function(){
+Route::group(['prefix'=>'user','namespace'=>'User','middleware'=>['auth']],function(){
   Route::get('/active','ActiveController@Active'); //请求激活
   Route::get('/init/{step?}','UserInfoController@init');
   Route::post('/init/{step?}','UserInfoController@getInit');
@@ -37,8 +37,13 @@ Route::auth();
 
 
 
-Route::group(['prefix'=>'test','namespace'=>'Test','middleware'=>['web']],function(){
+/* Route::group(['prefix'=>'test','namespace'=>'Test','middleware'=>['web']],function(){ */
+Route::group(['prefix'=>'test','namespace'=>'Test'],function(){
      /* Route::get('/oldtonew','OldDatabaseToNewDatabase@index'); */
         Route::get('/index','ReturnHtmlFile@index');
         Route::get('/email','TestEmail@index');
+
+        // 测试表单提交 和 错误返回
+        Route::get('/val','TestVal@index');
+        Route::post('/val','TestVal@get');
 });
