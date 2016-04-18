@@ -29,11 +29,20 @@ Route::group(['middleware'=>'web'],function(){
 });
 
 Route::group(['prefix'=>'user','namespace'=>'User','middleware'=>['auth']],function(){
+  //用户的操作
   Route::get('/active','ActiveController@Active'); //请求激活
   Route::get('/init/{step?}','UserInfoController@init');
   Route::post('/init/{step?}','UserInfoController@getInit');
 
 });
+Route::group(['prefix'=>'admin','namespace'=>'Root','middleware'=>['auth']],function(){
+  Route::get('/',function(){
+  return "Hello World";
+  });
+  Route::resource('socialurl','AdminSocialUrlController',['only'=>['index','create','store','destroy']]);
+});
+
+
 Route::get('user/active/{token?}','User\ActiveController@ActiveUser'); //通过 Url 激活
 
 Route::auth();
