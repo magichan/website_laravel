@@ -1,1 +1,10 @@
-[]
+{
+    "blog": {
+        "aliases": "\u535a\u5ba2",
+        "count": 0
+    },
+    "github": {
+        "aliases": "gitbub",
+        "count": 0
+    }
+}
