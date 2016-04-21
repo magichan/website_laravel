@@ -24,5 +24,10 @@ class User extends Authenticatable
     
     public function InfoInitLog(){
       return $this->hasOne('App\InfoInitLog');
+      // 一对一 关系
+    }
+    public  function SocialConnect()
+    {
+      return $this->hasMany('App\SocialConnect');
     }
 }
