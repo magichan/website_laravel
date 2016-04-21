@@ -54,6 +54,7 @@ Route::group(['prefix'=>'test','namespace'=>'Test'],function(){
      /* Route::get('/oldtonew','OldDatabaseToNewDatabase@index'); */
         Route::get('/index','ReturnHtmlFile@index');
         Route::get('/email','TestEmail@index');
+        Route::get('/runcode','Test@runcode');
 
         // 测试表单提交 和 错误返回
         Route::get('/val','TestVal@index');

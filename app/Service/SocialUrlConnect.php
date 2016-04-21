@@ -16,7 +16,7 @@ class SocialUrlConnect extends Attributes{
 
   /* 替代构造函数的功能
    */
-  public function init($filename = './SocialConnectList.json')
+  public function init($filename = './SocialUrlConnectList.json')
   {
     $this->setJsonFile($filename);
     $this->readJsonFile();
@@ -26,14 +26,14 @@ class SocialUrlConnect extends Attributes{
 
   /*  添加 url 类型的记录 到文件中
    * */
-  public function addUrlConnect($typename,$aliesname,$url)
+  public function addUrlConnect($typename,$aliesname)
   {
 
     if($this->checkAttributes($typename) )
     {
        return false;
     }else{
-      $config = array('type'=>'url','aliases'=>$aliesname,'url'=>$url,'count'=>0);
+      $config = array('aliases'=>$aliesname,'count'=>0);
       $this->addAttributes($typename,$config);
 
       $this->writeJsonFile();
@@ -61,15 +61,6 @@ class SocialUrlConnect extends Attributes{
     return  $this->getAttributes($type);
   }
 
-  public function getConnectType($type)
-  {
-    if($this->checkAttributes($type))
-    {
-      return false;
-    }else{
-      return $this->attributes[$type]['type'];
-    }
-  }
   // 返回 对应 记录的 url      
   public function getUrlConnectUrl($type)
   {
@@ -90,5 +81,14 @@ class SocialUrlConnect extends Attributes{
     }else{
       return $this->attributes[$type]['aliases'];
     }
+  }
+  public function deleteConnect($type)
+  {
+     $flag =  $this->deleteAttributes($type);
+     if($flag == true )
+     {
+      $this->writeJsonFile();
+     }
+     return $flag;
   }
 }

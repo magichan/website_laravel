@@ -7,6 +7,7 @@ class Attributes implements MultiAttributesContract
 {
   public $attributesJsonFile;
   public $attributes;
+
   public function __struct($jsonFile = './AttributesList.json')
   {
     $this->setJsonFile($jsonFile);

@@ -11,13 +11,12 @@ use App\Http\Controllers\Controller;
 class AdminSocialUrlController extends Controller
 {
     private $socialUrlConnect;
-    public function __struct(SocialUrlConnect $socialUrlConnect)
+    public function __construct(SocialUrlConnect $socialUrlConnect)
     {
-      /* $this->socialUrlConnect = $socialUrlConnect; */
-      $this->socialUrlConnect = new SocialUrlConnect();
-      
-
+      $this->socialUrlConnect = $socialUrlConnect;
+      $this->socialUrlConnect->init();
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,11 +24,9 @@ class AdminSocialUrlController extends Controller
      */
     public function index()
     {
-      /* $var = $this->socialUrlConnect->allConnects(); */
-      $var = $this->socialUrlConnect;
-      return view('test.test')->withVar($var);
+      $connects = $this->socialUrlConnect->allConnects();
+      return view('root.socialurlconnect.index')->withConnects($connects);
       
-    
     }
 
     /**
@@ -60,8 +57,9 @@ class AdminSocialUrlController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($type)
     {
-        //
+      $flag =   $this->socialUrlConnect->deleteConnect($type);
+       return $flag==true?redirect('admin/socialurl'):redirect('error');
     }
 }
