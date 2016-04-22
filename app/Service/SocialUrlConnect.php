@@ -5,8 +5,10 @@ use App\Service\Attributes;
 
 class SocialUrlConnect extends Attributes{
   
-  function __struct($jsonFile = './SocialUrlConnectList.json'){
-    parent::__struct($jsonFile);
+   public  function __construct($jsonFile = './SocialUrlConnectList.json'){
+    /* parent::__construct($jsonFile); */
+     parent::__construct($jsonFile);
+     /* $this->attributes = "asdfasdfasda"; */
   }
   /* 以数组的形式返回所有的 记录
    * */

@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\User;
-
 use Auth;
 use Input;
+use App\SocialConnect;
 use App\User;
 use App\InfoInitLog;
+use App\Service\SocialUrlConnect;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -48,8 +49,11 @@ class UserInfoController extends Controller
         return view('user.init.three')->withvar($user);
         break;
       case 'four':
-        return view('test.test')->withvar($user);
+        $socialurl = new SocialUrlConnect(); // 读取配置文件，获取已存在社交属性
+        return view('user.init.four')->withSocialUrlConnects($socialurl->allConnects());
         break;
+      case 'finish':
+        return view('user.init.finish');
       default:
         return "log 内部错误";
       }
@@ -88,8 +92,7 @@ class UserInfoController extends Controller
         }
 
         return $this->getTwoInit($request);
-        
-        break;
+
       case 'three':
         $user = Auth::user();
         $infoInitLog = $user->InfoInitLog;
@@ -97,15 +100,24 @@ class UserInfoController extends Controller
         $infoInitLog->save();
 
         return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
+
       case 'four':
-        return view('test.test')->withVar($user);
-        break;
+        
+       return $this->getFourInit($request);
+
+
       default:
-        return "log 内部错误";
+
+        return "log 内部错误".$step;
       }
 
   }
  
+  private function changeUserInitLogStep($infoInitLog,$step)
+  {
+        $infoInitLog->step = $step ;
+        $infoInitLog->save();
+  }
   private function getOneInit($request)
   {
     $user = Auth::user();
@@ -117,8 +129,7 @@ class UserInfoController extends Controller
     $user->update($new_data);//  利用数组赋值，速度快但不太安全。
 
     $infoInitLog = $user->InfoInitLog;
-    $infoInitLog->step = 2;
-    $infoInitLog->save(); // 改变信息初始化过程的状态标示 
+    $this->changeUserInitLogStep($infoInitLog,2);
   
 
     return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
@@ -142,9 +153,39 @@ class UserInfoController extends Controller
         }
 
         $infoInitLog = $user->InfoInitLog;
-        $infoInitLog->step = 3; 
-        $infoInitLog->save(); //切换到下一步骤
- 
+        $this->changeUserInitLogStep($infoInitLog,3);
+
+        return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
+  }
+
+  private function getFourInit($request)
+  {
+        $request->merge(array_map('trim',$request->all())); // 去掉输入的左右空白符
+
+        $socialUrlConnect = new SocialUrlConnect();
+        $connects = $socialUrlConnect->allConnects(); // 获取存放 属性 的数据文件
+
+        $user = Auth::user();
+        $all_data = $request->all(); // 获取所有输入
+        foreach($all_data as $key => $value )
+        {
+          if( in_array( $key , array_keys($connects) ) && !empty($value) ) // 查看 key 值是合法的值 并且 对应的值不为空
+          {
+            $user_connect = SocialConnect::where('user_id',$user->id)->where('connect_name',$key)->first();
+            if(empty($user_connect))
+            {
+              $user_connect = new SocialConnect();
+              $user_connect->connect_name = $key;
+              $user_connect->user_id = $user->id;
+            } // 之前没有的话，创建一个新的
+            $user_connect->connect_value = $value;
+            $user_connect->save();
+          }
+        }
+
+        $infoInitLog = $user->InfoInitLog;
+        $this->changeUserInitLogStep($infoInitLog,5);
+
         return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
   }
 
@@ -156,6 +197,7 @@ class UserInfoController extends Controller
     }elseif($step == 'two' && $log->step==2){
     }elseif($step == 'three' && $log->step==3){
     }elseif($step == 'four' && $log->step==4){
+    }elseif($step == 'finish' && $log->step==5 ){
     }elseif($step == 'error'){
     }else{
       return false;
@@ -172,6 +214,7 @@ class UserInfoController extends Controller
       case 2: return "two";
       case 3: return "three";
       case 4: return "four";
+      case 5: return "finish";
       default:return "error";
     }
   }
