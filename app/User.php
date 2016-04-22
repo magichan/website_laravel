@@ -30,4 +30,12 @@ class User extends Authenticatable
     {
       return $this->hasMany('App\SocialConnect');
     }
+    public function Donates(){
+      return $this->hasMany('App\Donate');
+    }
+    public function SocialConnects(){
+      return $this->hasMany('App\SocialConnect');
+    }
+
+}
 }
