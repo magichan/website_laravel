@@ -15,6 +15,26 @@
 /*     return view('welcome'); */
 /* }); */
 
+/* Route::group(['prefix'=>'test','namespace'=>'Test','middleware'=>['web']],function(){ */
+Route::group(['prefix'=>'test','namespace'=>'Test'],function(){
+
+       /*  获取切图页面 和 向切图页面发送数据
+        * */
+        Route::get('ajax','TestAjax@index');
+        Route::post('/ajax','TestAjax@getpost');
+
+
+
+        /* Route::get('/oldtonew','OldDatabaseToNewDatabase@index'); */
+        Route::get('/index','ReturnHtmlFile@index');
+        Route::get('/email','TestEmail@index');
+        Route::get('/runcode','Test@runcode');
+
+        // 测试表单提交 和 错误返回
+        Route::get('/val','TestVal@index');
+        Route::post('/val','TestVal@get');
+});
+
 Route::get('error',function(){
     return view('errors.cry');
 });
@@ -33,7 +53,7 @@ Route::group(['prefix'=>'user','namespace'=>'User','middleware'=>['auth']],funct
   Route::get('/active','ActiveController@Active'); //请求激活
   Route::get('/init/{step?}','UserInfoController@init');
   Route::post('/init/{step?}','UserInfoController@getInit');
-  Route::resource('donate','DonateController',['only'=>['index','create','store','destory']]);
+  /* Route::resource('donate','DonateController',['only'=>['index','create','store','destory']]); */
 
 });
 Route::group(['prefix'=>'admin','namespace'=>'Root','middleware'=>['auth']],function(){
@@ -50,14 +70,3 @@ Route::auth();
 
 
 
-/* Route::group(['prefix'=>'test','namespace'=>'Test','middleware'=>['web']],function(){ */
-Route::group(['prefix'=>'test','namespace'=>'Test'],function(){
-     /* Route::get('/oldtonew','OldDatabaseToNewDatabase@index'); */
-        Route::get('/index','ReturnHtmlFile@index');
-        Route::get('/email','TestEmail@index');
-        Route::get('/runcode','Test@runcode');
-
-        // 测试表单提交 和 错误返回
-        Route::get('/val','TestVal@index');
-        Route::post('/val','TestVal@get');
-});
