@@ -1,25 +1,34 @@
 # 提供测试性
 Api 主机地址/test/ajax 
+
+
+
 提交格式 ajax  json 
 内容 :
+
 ```
 {
   'portrait_url':'url'
 }
 ```
+
 返回
+
 ```
 {
   'status':'error',
   'reason':''
 }
 ```
+
 或返回
+
 ```
 {
   'status':'success'
 }
 ```
+
 注:
 
 1. 需要 **meta** 
