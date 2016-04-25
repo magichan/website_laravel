@@ -22,31 +22,19 @@ class UserInfoController extends Controller
 
   public function init(Request $request, $step = null)
   {
-    if(is_null($step))
-    {
-      return "访问非法网址:".Rquest::url();
-    }
+      $user = new User();
 
-    $user = Auth::user();
-    $log = $user->InfoInitLog;
-    if(is_null($log))
-    {
-      $log = InfoInitLog::create(['user_id'=>$user->id]);
-    }
-
-    if($this->checkStep($step,$log))// 查看请求的 step 和 记录的是否匹配
-    {  // 匹配直接返回 对应的页面
       switch($step)
       {
       case 'one':
-        return view('user.init.one')->withuser($user);
+        return view('user.init.one')->withUser($user);
         break;
       case 'two':
         
         return view('user.init.two')->withUser($user);
         break;
       case 'three':
-        return view('user.init.three')->withvar($user);
+        return view('user.init.three')->withUser($user);
         break;
       case 'four':
         $socialurl = new SocialUrlConnect(); // 读取配置文件，获取已存在社交属性
@@ -57,10 +45,6 @@ class UserInfoController extends Controller
       default:
         return "log 内部错误";
       }
-    }else{
-
-     return  redirect('user/init/'.$this->logtourl($log->step)); // 服从 数据库记录，将页面重定向。
-    }
 
   } 
 

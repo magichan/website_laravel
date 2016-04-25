@@ -14,6 +14,7 @@
 /* Route::get('/', function () { */
 /*     return view('welcome'); */
 /* }); */
+Route::get('/init/{step?}','UserInfoController@init');
 
 Route::get('error',function(){
     return view('errors.cry');
@@ -28,7 +29,7 @@ Route::group(['middleware'=>'web'],function(){
   Route::get('/contact','StaticHtml@contact');
 });
 
-Route::group(['prefix'=>'user','namespace'=>'User','middleware'=>['auth']],function(){
+Route::group(['prefix'=>'user','namespace'=>'User'],function(){
   //用户的操作
   Route::get('/active','ActiveController@Active'); //请求激活
   Route::get('/init/{step?}','UserInfoController@init');
