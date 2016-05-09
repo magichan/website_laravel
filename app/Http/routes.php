@@ -14,7 +14,7 @@
 /* Route::get('/', function () { */
 /*     return view('welcome'); */
 /* }); */
-Route::get('/init/{step?}','UserInfoController@init');
+//Route::get('/init/{step?}','UserInfoController@init');
 
 Route::get('error',function(){
     return view('errors.cry');
