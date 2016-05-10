@@ -17,11 +17,11 @@ class TestQiNiuServer extends Controller
     $this->qiniuService = $qiniuService;
 
   }
+  /* 得到 写在 .env 里的 bucket 的 uptoken 
+   * */
   function getuptoken()
   {
-    $buket = "self";
-    /* $this->qiniuService = new QiniuService(); */
-    return view('test.test')->withVar($this->qiniuService->getUpToken($buket));
+    return view('test.test')->withVar($this->qiniuService->getEnvBucketUpToken());
 
   }
 }
