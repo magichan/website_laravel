@@ -3,7 +3,7 @@ namespace App\Service;
 
 use Qiniu\Auth;
 
-class QiniuServer{
+class QiniuService {
   private $accessKey;
   private $secertKey;
   function __construct()
@@ -13,10 +13,14 @@ class QiniuServer{
   }
   /* 获得针对特定库的 uptoken 
    * */
-  function get_up_token($bucket)
+  function getUpToken($bucket)
   {
     $auth = new Auth($this->accessKey,$this->secertKey);
     $uptoken = $auth->uploadToken($bucket);
     return $uptoken;
+  }
+  function fake()
+  {
+    return "OK";
   }
 }
