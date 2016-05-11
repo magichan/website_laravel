@@ -21,7 +21,8 @@ class TestQiNiuServer extends Controller
    * */
   function getuptoken()
   {
-    return view('test.test')->withVar($this->qiniuService->getEnvBucketUpToken());
+    $json_value = array('uptoken'=>$this->qiniuService->getEnvBucketUpToken());
 
+    return response()->json($json_value);
   }
 }

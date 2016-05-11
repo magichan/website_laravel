@@ -1,3 +1,26 @@
+# uptoken 获得 
+url: 
+host/test/uptoken
+return:
+
+```
+{"uptoken":"value"}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 提供测试性
 Api 主机地址/test/ajax 
 

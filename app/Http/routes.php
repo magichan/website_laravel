@@ -24,7 +24,7 @@ Route::group(['prefix'=>'test','namespace'=>'Test'],function(){
         Route::post('/ajax','TestAjax@getpost');
       /* 返回 七牛 的 uptoken 
        * */
-        Route::get('qiniutoken','TestQiNiuServer@getuptoken');
+        Route::get('uptoken','TestQiNiuServer@getuptoken');
 
 
 
