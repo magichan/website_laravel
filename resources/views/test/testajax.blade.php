@@ -23,7 +23,12 @@
 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
 },
                         url: '{{url('test/ajax')}}',
-                        data: {'portrait_url':'http://www.baidu.com'},
+                        data:{'sourceLink':'http://78re52.com1.z0.glb.clouddn.com/resource/gogopher.jpg?imageMogr2/crop/!300x300a30a100',
+                              "a_x":300,
+                              "a_y":300,
+                              "e_width":230,
+                              "e_height":230
+                },
                         dataType: 'json',
                         success: function (data) {
                                 console.log(data);
