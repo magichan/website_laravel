@@ -33,6 +33,7 @@ Route::group(['prefix'=>'user','namespace'=>'User','middleware'=>['auth']],funct
   Route::get('/active','ActiveController@Active'); //请求激活
   Route::get('/init/{step?}','UserInfoController@init');
   Route::post('/init/{step?}','UserInfoController@getInit');
+  Route::get('/uptoken','QiNiuServiceController@getUserPhotoBucketUpToken');
   Route::resource('donate','DonateController',['only'=>['index','create','store','destory']]);
 
 });
