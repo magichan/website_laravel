@@ -19,6 +19,11 @@ class UserInfoController extends Controller
    * 只有在该数组的中的选择才会被通过，否则就会报错
    * */
 
+  private $host ;
+  /* 成员照片 url 的 host 部分  http://.....com/...
+   * 来自 .env 配置文件
+   * */
+
 
   public function init(Request $request, $step = null)
   {
@@ -158,6 +163,70 @@ class UserInfoController extends Controller
         return  redirect('user/init/'.$this->logtourl($infoInitLog->step)); // 服从 数据库记录，将页面重定向。
   }
 
+ /* 输入 json 
+   *"sourceLink":图片的 URl,
+   "a_x": ,
+   "a_y": ,
+   "e_width": ,
+   "e_height": 
+   * */
+  
+  private function getThreeInit($request)
+  {
+    $user = Auht::user();
+    $portrait_url = $request->input('sourceLink');
+    $a_x          = $request->input('a_x');
+    $a_y          = $request->input('a_y');
+    $e_width      = $request->input('e_width');
+    $e_height     = $request->input('e_height');// 获取对应的参数
+
+    if( isset($portrait_url) === FALSE ) { 
+      return response()->json(['status'=>'error','reason'=>'the portrait_url value not exist']); 
+    }elseif( filter_var($portrait_url,FILTER_VALIDATE_URL) === FALSE ){ // 检测 url 是否合法 
+      return response()->json(['status'=>'error','reason'=>'the portrait_url value is not a url']);
+    }else{ 
+
+      $this->host = env('PORTRAIT_QINIUSERVER_HOST');// 
+      if(is_null($this->host))
+      {
+        $this->host = $this->sliceUrlToGetHost($portrait_url);
+        /* ??? 写环境变量遇到问题
+         * */
+      }else{
+        if($this->host != $this->sliceUrlToGetHost($portrait_url)){
+          // 默认设置的 host 和 发送过来的 host 不一样 ,返回错误并且提示修改 设置
+          return ('errors.cry');
+        }else{
+          $photoUrlWithoutHost  =$this->sliceUrlToGetPath($portrait_url).$this->constantPath.$e_width.'x'.$e_height.'a'.$a_x.'a'.$a_y;//将 传入参数 拼接  成 符合特定格式的 url 
+
+          $user->protrait = $photoUrlWithoutHost ;
+          $user->save();
+          // 存入到数据库中
+
+          return response()->json(['status'=>'success']); 
+        }
+
+      }
+     
+    }
+
+
+  }
+
+ /* 切割获取的 url ,将 host 部分取出  
+   * */
+  private function sliceUrlToGetHost($url)
+  {
+    $urlComponetArray = parse_url($url); // 返回 含有 协议， host, user, 等信息的数组 
+    $url = $urlComponetArray['scheme'].'://'.$urlComponetArray['host'];
+    return $url;
+  }
+
+  private function sliceUrlToGetPath($url)
+  {
+    return  parse_url($url,PHP_URL_PATH); // 返回 含有 协议， host, user, 等信息的数组 
+  }
+
   private function getFourInit($request)
   {
         $request->merge(array_map('trim',$request->all())); // 去掉输入的左右空白符
@@ -205,6 +274,7 @@ class UserInfoController extends Controller
     return true;
 
   }
+
   private function logtourl($step)
   {
     switch($step)
@@ -218,6 +288,7 @@ class UserInfoController extends Controller
       default:return "error";
     }
   }
+  
 
   private function checkInthePrivateChoice($choices)
   {
