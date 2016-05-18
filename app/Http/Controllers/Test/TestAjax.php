@@ -40,7 +40,7 @@ class TestAjax extends Controller
     }else{
      
       $photo_url = $this->sliceUrlToGetHost($portrait_url).$this->sliceUrlToGetPath($portrait_url).$this->constantPath.$e_width.'x'.$e_height.'a'.$a_x.'a'.$a_y;//将 传入参数 拼接  成 符合特定格式的 url 
-      return response()->json(['status'=>$photo_url]); 
+      return response()->json(['status'=>'success']); 
     }
   }
   /* 切割获取的 url ,将 host 部分取出  
